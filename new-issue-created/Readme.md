@@ -1,7 +1,7 @@
 # 📄 n8n Workflow 文件：Sentry → GitHub 自動錯誤通報流程與 Slack 通知流程
 
 ## 🎯 目的
-本 workflow 自動處理來自 **Sentry** 的錯誤通報，並轉換為 **GitHub Issue**，以利錯誤追蹤與修復。整合後流程大幅減少人工處理時間，提升開發反應速度與資訊透明度。
+本 workflow 自動處理來自 **Sentry** 的錯誤通報，並轉換為 **GitHub Issue** 以及通知到 **Slack** 頻道，以利錯誤追蹤與修復。
 
 ---
 

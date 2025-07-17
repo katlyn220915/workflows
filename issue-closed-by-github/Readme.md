@@ -1,7 +1,7 @@
 # 📄 n8n Workflow 文件：GitHub Issue 關閉自動同步 Sentry 狀態
 
 ## 🎯 目的
-本 workflow 監聽 GitHub Issue 被關閉的事件，並自動同步對應 Sentry Issue 狀態為 resolved。此流程可確保 Sentry 與 GitHub 的錯誤追蹤狀態一致，減少人工同步的負擔。
+本 workflow 監聽 GitHub Issue 被關閉的事件，並自動同步對應 Sentry Issue 狀態為 resolved
 
 ---
 
