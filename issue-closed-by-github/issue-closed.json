@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "close-issue",
+        "options": {}
+      },
+      "id": "e6631a3d-0516-4e2f-b3b6-59f15d226935",
+      "name": "Issue closed by github",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        320,
+        192
+      ],
+      "webhookId": "f25d4e78-2517-48bc-adb2-89de0494797f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst data = [];\nconst body = $input.first().json.body.issue.body;\nconst sentryApiUrl = body.replace(/[\\s\\S]*\\*\\*Sentry Issue API:\\*\\*\\s*(https?:\\/\\/[^\\s]+)[\\s\\S]*/, '$1');\n\n\ndata.push({\n  sentryApiUrl\n});\n\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        192
+      ],
+      "id": "7de3bda8-e68e-4512-9e65-1ea92170f677",
+      "name": "Get sentry issue url from Github issue body"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.sentryApiUrl }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "resolved"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        192
+      ],
+      "id": "32d2ba10-c960-432c-ab34-b90de64aadf9",
+      "name": "Resolve the sentry issue",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "p6nwCNav6v7P40nA",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Issue closed by github": {
+      "main": [
+        [
+          {
+            "node": "Get sentry issue url from Github issue body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get sentry issue url from Github issue body": {
+      "main": [
+        [
+          {
+            "node": "Resolve the sentry issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "06addc1e6bcf908205c8782201fd5fb95a42bfc3ea78367393dad25dfb5308d3"
+  }
+}

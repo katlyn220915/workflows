@@ -1,0 +1,204 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "owner": {
+          "__rl": true,
+          "value": "xxtechec",
+          "mode": "list",
+          "cachedResultName": "xxtechec",
+          "cachedResultUrl": "https://github.com/xxtechec"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "web-core123-vendor-frontend",
+          "mode": "list",
+          "cachedResultName": "web-core123-vendor-frontend",
+          "cachedResultUrl": "https://github.com/xxtechec/web-core123-vendor-frontend"
+        },
+        "title": "{{ $json.title }}",
+        "body": "=## 🐞 Sentry Error Report\n\n**Sentry Issue ID:** {{ $json.issue_id }}  \n**Sentry Issue Link:** [🔗 View in Sentry]({{ $json.issue_link }})\n**Sentry Issue API:** {{ $json.issue_url }}\n\n---\n\n### 🌐 Environment Info\n\n- **Environment:** {{ $json.environment }}\n- **Site:** {{ $json.site }}\n- **API Method:** `{{ $json.method }}`\n- **API Path:** `{{ $json.apiPath }}`\n- **API Status:** {{ $json.apiStatus }}\n\n---\n\n### 📦 Request Configs\n\n```json\n{{ JSON.stringify($json.requestConfig, null, 2) }}\n```\n\n---\n\n### Response Configs\n\n```json\n{{ JSON.stringify($json.responseData, null, 2) }}\n```\n",
+        "labels": [
+          {
+            "label": "sentry"
+          }
+        ],
+        "assignees": [
+          {
+            "assignee": "katlyn220915"
+          }
+        ]
+      },
+      "id": "0c862eca-fdf0-4a4e-b371-81538ef234ae",
+      "name": "Create GitHub Issue",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        912,
+        -112
+      ],
+      "webhookId": "70501746-9d95-42d8-a92a-caaacde2c9fc",
+      "credentials": {
+        "githubApi": {
+          "id": "K15m4VJcCa4pC7Lg",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-issue",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "47d221cf-2d22-4514-9302-37b46ebc3cb0",
+      "name": "Issue Created from Sentry",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -112
+      ],
+      "webhookId": "f4048e8c-e37c-4ff0-b1ca-3715718ca40a"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"title\": \"{{ $json.body.data.event.title }}\",\n  \"tags\": {{ $json.body.data.event.tags }},\n  \"environment\": \"{{ $json.body.data.event._dsc.environment }}\",\n  \"extra\": {{ $json.body.data.event.extra }},\n  \"issue_url\": \"{{ $json.body.data.event.issue_url }}\",\n  \"issue_link\": \"{{ $json.body.data.event.web_url }}\",\n  \"issue_id\": {{ $json.body.data.event.issue_id }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        -112
+      ],
+      "id": "90b96508-946d-4515-8d5e-f23f00409b71",
+      "name": "Extract Key Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst items = [];\nconst unknown = \"UNKNOWN\"\nconst tagsObject = Object.fromEntries($input.first().json.tags);\nconst {requestConfig = unknown, responseData = unknown} = $input.first().json.extra;\nconst {method = unknown, path = unknown, site, status = unknown, url = unknown} = tagsObject;\nitems.push({\n    title: $input.first().json.title,\n    environment: $input.first().json.environment,\n    method,\n    apiPath: path,\n    apiStatus: status,\n    site,\n    web_url: url,\n    requestConfig,\n    responseData,\n    issue_id: $input.first().json.issue_id,\n    issue_link: $input.first().json.issue_link,\n    issue_url: $input.first().json.issue_url,\n  })\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -112
+      ],
+      "id": "14cb47ed-2214-40cd-81db-febea3386993",
+      "name": "Format & Organize Data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hooks.slack.com/triggers/xxx/xxx/xxx",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "apiMethod",
+              "value": "={{ $json.method }}"
+            },
+            {
+              "name": "taskTitle",
+              "value": "{{ $json.title }}"
+            },
+            {
+              "name": "issueUrl",
+              "value": "={{ $json.issue_link }}"
+            },
+            {
+              "name": "apiStatusCode",
+              "value": "={{ $json.apiStatus }}"
+            },
+            {
+              "name": "site",
+              "value": "={{ $json.site }}"
+            },
+            {
+              "name": "webUrl",
+              "value": "={{ $json.web_url }}"
+            },
+            {
+              "name": "X-Trace-Id",
+              "value": "\"還沒有值\""
+            },
+            {
+              "name": "apiPath",
+              "value": "={{ $json.apiPath }}"
+            },
+            {
+              "name": "environment",
+              "value": "={{ $json.environment }}"
+            },
+            {
+              "name": "responseData",
+              "value": "={{ JSON.stringify($json.responseData) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        928,
+        -352
+      ],
+      "id": "18504ff3-4b82-4cfe-81ba-cb313507a4ee",
+      "name": "Send message to slack channel (trigger slack workflow)"
+    }
+  ],
+  "connections": {
+    "Create GitHub Issue": {
+      "main": [
+        []
+      ]
+    },
+    "Issue Created from Sentry": {
+      "main": [
+        [
+          {
+            "node": "Extract Key Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Key Fields": {
+      "main": [
+        [
+          {
+            "node": "Format & Organize Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format & Organize Data": {
+      "main": [
+        [
+          {
+            "node": "Create GitHub Issue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send message to slack channel (trigger slack workflow)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "06addc1e6bcf908205c8782201fd5fb95a42bfc3ea78367393dad25dfb5308d3"
+  }
+}
