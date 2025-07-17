@@ -11,6 +11,8 @@
 2. [解析 Sentry API 連結] ⮕ 
 3. [呼叫 Sentry API 將 issue 標記為 resolved]
 
+![Sentry 流程圖](https://github.com/katlyn220915/workflows/blob/main/assets/issue-closed-by-github.jpg)
+
 ---
 
 ## 🧩 Workflow Node 詳解

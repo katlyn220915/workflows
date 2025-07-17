@@ -12,7 +12,7 @@
 3. [Format & Organize Data]（格式化與整理資料）⮕ 
 4. [Create GitHub Issue]（建立 GitHub issue）& [Send message to slack channel (trigger slack workflow)]（同步通知 Slack）
 
-![Sentry 流程圖](https://github.com/katlyn220915/workflows/assets/new-issue-created-workflow.jpg)
+![Sentry 流程圖](https://github.com/katlyn220915/workflows/blob/main/assets/new-issue-created-workflow.jpg)
 
 ---
 
@@ -149,7 +149,7 @@
 
 ## ☀️ 成果
 
-![Result](https://github.com/katlyn220915/workflows/assets/result.jpg)
+![Result](https://github.com/katlyn220915/workflows/blob/main/assets/result.jpg)
 
 ---
 
